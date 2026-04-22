@@ -41,14 +41,20 @@ export const BLUR_BLEND_ADDRESS: Address =
   "0x29469395eAf6f95920E59F858042f0e28D98a20B";
 
 /**
- * Arcade.xyz loan contracts. Addresses must be verified against the current
- * Arcade docs when wiring handlers in apps/indexer/src/arcade.ts, because
- * Arcade migrated between v3 and v4.
+ * Arcade.xyz v3 loan contracts. V3 is still the current production version
+ * on mainnet; v4 is not yet deployed per the arcadexyz/arcade-protocol repo
+ * README. LoanCore emits LoanStarted / LoanRepaid / LoanClaimed but does
+ * not embed collateral info in the event payload, so the PPG filter reads
+ * LoanCore.getLoan(loanId) at event time.
+ *
+ * Sources:
+ *   https://etherscan.io/address/0x59e57f9a313a2eb1c7357ecc331ddca14209f403
+ *   https://github.com/arcadexyz/arcade-protocol
  */
-export const ARCADE_CONTRACTS: Record<string, Address> = {
-  // loanCore: "0x...",
-  // originationController: "0x...",
-};
+export const ARCADE_CONTRACTS = {
+  /** Arcade v3 LoanCore. Emits LoanStarted/LoanRepaid/LoanClaimed. */
+  loanCore: "0x59E57F9A313A2eB1c7357ECc331dDCa14209F403",
+} as const satisfies Record<string, Address>;
 
 /**
  * Block to begin indexing loan contracts from. Chosen to cover all currently-

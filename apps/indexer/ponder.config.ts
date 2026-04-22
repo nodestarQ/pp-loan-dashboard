@@ -2,12 +2,14 @@ import { createConfig } from "ponder";
 import { erc721Abi } from "viem";
 
 import {
+  ARCADE_CONTRACTS,
   LOAN_INDEXER_START_BLOCK,
   NFTFI_CONTRACTS,
   PPG_ADDRESS,
   PPG_DEPLOYMENT_BLOCK,
 } from "@pp/shared";
 
+import { arcadeLoanCoreAbi } from "./abis/arcade";
 import { nftfiAbi } from "./abis/nftfi";
 
 if (!process.env.PONDER_RPC_URL_1) {
@@ -38,6 +40,12 @@ export default createConfig({
       chain: "mainnet",
       abi: nftfiAbi,
       address: NFTFI_CONTRACTS.directLoanFixedOfferRedeploy,
+      startBlock: LOAN_INDEXER_START_BLOCK,
+    },
+    ArcadeLoanCore: {
+      chain: "mainnet",
+      abi: arcadeLoanCoreAbi,
+      address: ARCADE_CONTRACTS.loanCore,
       startBlock: LOAN_INDEXER_START_BLOCK,
     },
   },
