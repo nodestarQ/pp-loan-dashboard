@@ -41,6 +41,9 @@ importers:
       postgres:
         specifier: ^3.4.9
         version: 3.4.9
+      viem:
+        specifier: ^2.48.4
+        version: 2.48.4(typescript@5.9.3)
     devDependencies:
       '@sveltejs/adapter-node':
         specifier: ^5.5.4
