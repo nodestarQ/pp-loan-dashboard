@@ -3,6 +3,7 @@ import { erc721Abi } from "viem";
 
 import {
   ARCADE_CONTRACTS,
+  BLUR_BLEND_ADDRESS,
   LOAN_INDEXER_START_BLOCK,
   NFTFI_CONTRACTS,
   PPG_ADDRESS,
@@ -10,6 +11,7 @@ import {
 } from "@pp/shared";
 
 import { arcadeLoanCoreAbi } from "./abis/arcade";
+import { blurBlendAbi } from "./abis/blur";
 import { nftfiAbi } from "./abis/nftfi";
 
 if (!process.env.PONDER_RPC_URL_1) {
@@ -46,6 +48,12 @@ export default createConfig({
       chain: "mainnet",
       abi: arcadeLoanCoreAbi,
       address: ARCADE_CONTRACTS.loanCore,
+      startBlock: LOAN_INDEXER_START_BLOCK,
+    },
+    BlurBlend: {
+      chain: "mainnet",
+      abi: blurBlendAbi,
+      address: BLUR_BLEND_ADDRESS,
       startBlock: LOAN_INDEXER_START_BLOCK,
     },
   },
