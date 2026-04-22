@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.2.7",
-    "@pp/shared": "workspace:*"
+    "@pp/shared": "workspace:*",
+    "postgres": "^3.4.9"
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^5.5.4",

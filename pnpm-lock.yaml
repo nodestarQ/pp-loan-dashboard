@@ -18,7 +18,7 @@ importers:
         version: 4.12.14
       ponder:
         specifier: ^0.16.6
-        version: 0.16.6(@opentelemetry/api@1.9.1)(@types/node@22.19.17)(hono@4.12.14)(lightningcss@1.32.0)(typescript@5.9.3)(viem@2.48.4(typescript@5.9.3))
+        version: 0.16.6(@opentelemetry/api@1.9.1)(@types/node@22.19.17)(hono@4.12.14)(lightningcss@1.32.0)(postgres@3.4.9)(typescript@5.9.3)(viem@2.48.4(typescript@5.9.3))
       viem:
         specifier: ^2.21.55
         version: 2.48.4(typescript@5.9.3)
@@ -38,6 +38,9 @@ importers:
       '@pp/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      postgres:
+        specifier: ^3.4.9
+        version: 3.4.9
     devDependencies:
       '@sveltejs/adapter-node':
         specifier: ^5.5.4
@@ -1551,6 +1554,10 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
+  postgres@3.4.9:
+    resolution: {integrity: sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw==}
+    engines: {node: '>=12'}
+
   process-warning@3.0.0:
     resolution: {integrity: sha512-mqn0kFRl0EoqhnL0GQ0veqFHyIN1yig9RHh/InzORTUiZHFRAur+aMtRkELNwGs9aNwKS6tg/An4NYBPGwvtzQ==}
 
@@ -2669,12 +2676,13 @@ snapshots:
 
   dotenv@16.6.1: {}
 
-  drizzle-orm@0.41.0(@electric-sql/pglite@0.2.13)(@opentelemetry/api@1.9.1)(kysely@0.26.3)(pg@8.20.0):
+  drizzle-orm@0.41.0(@electric-sql/pglite@0.2.13)(@opentelemetry/api@1.9.1)(kysely@0.26.3)(pg@8.20.0)(postgres@3.4.9):
     optionalDependencies:
       '@electric-sql/pglite': 0.2.13
       '@opentelemetry/api': 1.9.1
       kysely: 0.26.3
       pg: 8.20.0
+      postgres: 3.4.9
 
   eastasianwidth@0.2.0: {}
 
@@ -3058,7 +3066,7 @@ snapshots:
       sonic-boom: 3.8.1
       thread-stream: 2.7.0
 
-  ponder@0.16.6(@opentelemetry/api@1.9.1)(@types/node@22.19.17)(hono@4.12.14)(lightningcss@1.32.0)(typescript@5.9.3)(viem@2.48.4(typescript@5.9.3)):
+  ponder@0.16.6(@opentelemetry/api@1.9.1)(@types/node@22.19.17)(hono@4.12.14)(lightningcss@1.32.0)(postgres@3.4.9)(typescript@5.9.3)(viem@2.48.4(typescript@5.9.3)):
     dependencies:
       '@babel/code-frame': 7.29.0
       '@commander-js/extra-typings': 12.1.0(commander@12.1.0)
@@ -3075,7 +3083,7 @@ snapshots:
       dataloader: 2.2.3
       detect-package-manager: 3.0.2
       dotenv: 16.6.1
-      drizzle-orm: 0.41.0(@electric-sql/pglite@0.2.13)(@opentelemetry/api@1.9.1)(kysely@0.26.3)(pg@8.20.0)
+      drizzle-orm: 0.41.0(@electric-sql/pglite@0.2.13)(@opentelemetry/api@1.9.1)(kysely@0.26.3)(pg@8.20.0)(postgres@3.4.9)
       glob: 10.5.0
       graphql: 16.8.2
       graphql-yoga: 5.17.1(graphql@16.8.2)
@@ -3155,6 +3163,8 @@ snapshots:
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
+
+  postgres@3.4.9: {}
 
   process-warning@3.0.0: {}
 

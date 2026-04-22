@@ -1,9 +1,13 @@
-<!--
-	Placeholder layout for phase 8. Real components (Banner, Narrative,
-	HealthMeter, GoalsTracker, HolderLeaderboard, LoanLeaderboard) land in
-	phases 10 and 11. This file exists to verify design tokens and the
-	mobile-first > md:two-column grid visually.
--->
+<script lang="ts">
+	import { PPG_TOTAL_SUPPLY } from "@pp/shared";
+	import type { PageData } from "./$types";
+
+	let { data }: { data: PageData } = $props();
+
+	const shortAddr = (addr: string) =>
+		`${addr.slice(0, 6)}…${addr.slice(-4)}`;
+	const pctInLoans = $derived((data.activeLoans / PPG_TOTAL_SUPPLY) * 100);
+</script>
 
 <section class="mb-6 md:mb-10">
 	<div class="rounded-3xl bg-ice-300 p-6 shadow-huddle-lg md:p-10">
@@ -34,30 +38,67 @@
 	<div class="flex flex-col gap-4 md:gap-6">
 		<div class="rounded-2xl bg-white p-6 shadow-huddle">
 			<p class="text-xs font-semibold uppercase tracking-wider text-fog">
-				Huddle Health
+				Active PPG loans
 			</p>
-			<p class="mt-4 text-6xl font-extrabold text-ice-500">..</p>
-			<p class="mt-2 text-fog">Health meter lands in phase 10.</p>
+			<p class="mt-4 text-6xl font-extrabold text-ice-500">
+				{data.activeLoans}
+			</p>
+			<p class="mt-2 text-fog">
+				{pctInLoans.toFixed(2)}% of the 8,888 supply. Phase 10 turns this
+				into a proper meter.
+			</p>
 		</div>
 		<div class="rounded-2xl bg-white p-6 shadow-huddle">
 			<p class="text-xs font-semibold uppercase tracking-wider text-fog">
 				Community Goal
 			</p>
-			<p class="mt-4 text-ink">Goals tracker lands in phase 10.</p>
+			<p class="mt-4 text-ink">
+				Target: <span class="font-bold">{data.goalTarget}</span> active loans
+				or fewer. Goals tracker lands in phase 10.
+			</p>
 		</div>
 	</div>
+
 	<div class="flex flex-col gap-4 md:gap-6">
 		<div class="rounded-2xl bg-white p-6 shadow-huddle">
 			<p class="text-xs font-semibold uppercase tracking-wider text-fog">
 				Top Holders
 			</p>
-			<p class="mt-4 text-ink">Leaderboard lands in phase 11.</p>
+			{#if data.topHolders.length === 0}
+				<p class="mt-4 text-fog">Indexer has not populated this yet.</p>
+			{:else}
+				<ol class="mt-4 divide-y divide-mist">
+					{#each data.topHolders as h, i (h.address)}
+						<li class="flex items-center justify-between py-2">
+							<span class="text-ink">
+								<span class="mr-2 font-bold text-fog">{i + 1}.</span>
+								{shortAddr(h.address)}
+							</span>
+							<span class="font-bold text-ice-500">{h.balance}</span>
+						</li>
+					{/each}
+				</ol>
+			{/if}
 		</div>
 		<div class="rounded-2xl bg-white p-6 shadow-huddle">
 			<p class="text-xs font-semibold uppercase tracking-wider text-fog">
 				Top Loan Addresses
 			</p>
-			<p class="mt-4 text-ink">Leaderboard lands in phase 11.</p>
+			{#if data.topLoanAddresses.length === 0}
+				<p class="mt-4 text-fog">Indexer has not populated this yet.</p>
+			{:else}
+				<ol class="mt-4 divide-y divide-mist">
+					{#each data.topLoanAddresses as l, i (l.borrower)}
+						<li class="flex items-center justify-between py-2">
+							<span class="text-ink">
+								<span class="mr-2 font-bold text-fog">{i + 1}.</span>
+								{shortAddr(l.borrower)}
+							</span>
+							<span class="font-bold text-coral">{l.locked}</span>
+						</li>
+					{/each}
+				</ol>
+			{/if}
 		</div>
 	</div>
 </section>
