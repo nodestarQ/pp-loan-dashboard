@@ -1,6 +1,48 @@
 @import "tailwindcss";
 @import "@fontsource-variable/nunito";
 
+/**
+ * Pudgy "Pengu Winter" design tokens. Light-mode default. Declaring them
+ * in @theme makes them available as Tailwind utilities automatically,
+ * e.g. bg-ice-300, text-ink, shadow-huddle, rounded-huddle.
+ */
+@theme {
+	/* Icy blues: the signature palette. */
+	--color-ice-50: #f4fafe;
+	--color-ice-100: #e6f4fc;
+	--color-ice-200: #a7e2f6;
+	--color-ice-300: #7fd0f5;
+	--color-ice-500: #1e8acb;
+	--color-ice-700: #2e4e8c;
+
+	/* Warm scarves-and-beaks accents. */
+	--color-coral: #ff8a65;
+	--color-mustard: #f4b740;
+	--color-plush: #ffc1cc;
+
+	/* Neutrals: softened black, cool grey, ice shadow. */
+	--color-ink: #1c2b36;
+	--color-fog: #6b7f8e;
+	--color-mist: #c9dce8;
+
+	/* Typography. */
+	--font-sans: "Nunito Variable", ui-sans-serif, system-ui, sans-serif;
+
+	/* Pillowy shadows. */
+	--shadow-huddle:
+		0 10px 30px -8px rgba(28, 43, 54, 0.12),
+		0 2px 6px -2px rgba(28, 43, 54, 0.08);
+	--shadow-huddle-lg:
+		0 20px 50px -12px rgba(28, 43, 54, 0.18),
+		0 4px 12px -4px rgba(28, 43, 54, 0.1);
+}
+
 :root {
-	font-family: "Nunito Variable", ui-sans-serif, system-ui, sans-serif;
+	font-family: var(--font-sans);
+	color: var(--color-ink);
+}
+
+body {
+	min-height: 100vh;
+	background: linear-gradient(180deg, var(--color-ice-50) 0%, #ffffff 100%);
 }

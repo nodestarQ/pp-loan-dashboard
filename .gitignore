@@ -142,6 +142,9 @@ vite.config.ts.timestamp-*
 .pnpm-store/
 .pnpm-debug.log*
 
+# SvelteKit adapter-node output
+apps/web/build/
+
 # Ponder
 .ponder/
 apps/indexer/generated/

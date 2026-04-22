@@ -1,1 +1,0 @@
-import{M as e,f as t,u as n}from"../chunks/jXUvQDND.js";import"../chunks/DEDqjojZ.js";e();var r=t(`<main class="min-h-screen flex items-center justify-center"><h1 class="text-4xl font-bold">Huddle Health</h1></main>`);function i(e){n(e,r())}export{i as component};
