@@ -51,8 +51,15 @@ export const ARCADE_CONTRACTS: Record<string, Address> = {
 };
 
 /**
- * Block to begin indexing from. Chosen to cover all currently-open loans
- * (NFT loan terms rarely exceed 90 days) without a multi-hour historical
- * backfill. Roughly late April 2025.
+ * Block to begin indexing loan contracts from. Chosen to cover all currently-
+ * open loans (NFT loan terms rarely exceed 90 days) without a multi-hour
+ * historical backfill. Roughly late April 2025.
  */
-export const INDEXER_START_BLOCK = 22_200_000 as const;
+export const LOAN_INDEXER_START_BLOCK = 22_200_000 as const;
+
+/**
+ * PPG contract deployment era. Holder balances are derived from the full
+ * Transfer history, so the indexer must start here (not at the loan start
+ * block) for balances to be correct. Expect a longer initial backfill.
+ */
+export const PPG_DEPLOYMENT_BLOCK = 12_876_000 as const;
