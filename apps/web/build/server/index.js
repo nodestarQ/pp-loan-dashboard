@@ -1,136 +1,27 @@
-import { H as HttpError, R as Redirect, c as coalesce_to_error, g as get_status, a as get_message, w as with_request_store, t as text_decoder, p as parse, S as SvelteKitError, _ as __commonJSMin, o as options, b as get_hooks, n as noop, h as has_resolution_suffix, d as has_data_suffix, e as base, s as strip_resolution_suffix, f as strip_data_suffix, T as TRAILING_SLASH_PARAM, I as INVALIDATED_PARAM, i as decode_pathname, j as add_data_suffix, k as add_resolution_suffix, l as find_route, m as normalize_path, q as disable_search, v as validate_layout_server_exports, r as validate_layout_exports, u as validate_page_server_exports, x as validate_page_exports, y as noop_span, z as app_dir, A as create_remote_key, B as assets, C as hash, D as text_encoder$1, E as compact, F as once, G as normalize_error, J as resolve, K as parse_remote_arg, L as stringify, M as make_trackable, N as stringify$1, O as ActionFailure, P as read_implementation, Q as split_remote_key, U as get_relative_path, V as base64_encode, W as override, X as reset, Y as set_read_implementation } from './chunks/internal-BRMIY320.js';
-import { u as uneval, w as writable, r as readable } from './chunks/dev-BLt8_SxK.js';
+import { c as coalesce_to_error, g as get_status, a as get_message, w as with_request_store, t as text_decoder, p as parse, _ as __commonJSMin, o as options, b as get_hooks, n as noop, h as has_resolution_suffix, d as has_data_suffix, s as strip_resolution_suffix, e as strip_data_suffix, T as TRAILING_SLASH_PARAM, I as INVALIDATED_PARAM, f as decode_pathname, i as add_data_suffix, j as add_resolution_suffix, k as find_route, l as normalize_path, m as disable_search, v as validate_layout_server_exports, q as validate_layout_exports, r as validate_page_server_exports, u as validate_page_exports, x as noop_span, y as create_remote_key, z as hash, A as text_encoder, B as compact, C as once, D as normalize_error, E as resolve, F as parse_remote_arg, G as stringify, H as make_trackable, J as stringify$1, K as read_implementation, L as split_remote_key, M as get_relative_path, N as base64_encode, O as set_read_implementation } from './chunks/internal-eNJc6I6p.js';
+import { j as json, t as text, e as error, i as isRedirect } from './chunks/index-De89J4_m.js';
+import { H as HttpError, S as SvelteKitError, R as Redirect, A as ActionFailure } from './chunks/index-DBqjc0Yf.js';
+import { u as uneval, w as writable, r as readable } from './chunks/dev-C_P_LExu.js';
 import { s as set_private_env, a as set_public_env, p as public_env } from './chunks/shared-server-R09vgzWg.js';
 
-const text_encoder = new TextEncoder();
-new TextDecoder();
-
-/** @import { StandardSchemaV1 } from '@standard-schema/spec' */
-
-
-// TODO 3.0: remove these types as they are not used anymore (we can't remove them yet because that would be a breaking change)
+//#region ../../node_modules/.pnpm/@sveltejs+kit@2.57.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@7.0.0_svelte_0f10e75a2d8c9538f14312c3f8d71069/node_modules/@sveltejs/kit/src/runtime/app/paths/internal/server.js
+var base = "";
+var assets = base;
+var app_dir = "_app";
+var initial = {
+	base,
+	assets
+};
 /**
- * @template {number} TNumber
- * @template {any[]} [TArray=[]]
- * @typedef {TNumber extends TArray['length'] ? TArray[number] : LessThan<TNumber, [...TArray, TArray['length']]>} LessThan
- */
-
-/**
- * @template {number} TStart
- * @template {number} TEnd
- * @typedef {Exclude<TEnd | LessThan<TEnd>, LessThan<TStart>>} NumericRange
- */
-
-// Keep the status codes as `number` because restricting to certain numbers makes it unnecessarily hard to use compared to the benefits
-// (we have runtime errors already to check for invalid codes). Also see https://github.com/sveltejs/kit/issues/11780
-
-// we have to repeat the JSDoc because the display for function overloads is broken
-// see https://github.com/microsoft/TypeScript/issues/55056
-
-/**
- * Throws an error with a HTTP status code and an optional message.
- * When called during request handling, this will cause SvelteKit to
- * return an error response without invoking `handleError`.
- * Make sure you're not catching the thrown error, which would prevent SvelteKit from handling it.
- * @param {number} status The [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses). Must be in the range 400-599.
- * @param {App.Error} body An object that conforms to the App.Error type. If a string is passed, it will be used as the message property.
- * @overload
- * @param {number} status
- * @param {App.Error} body
- * @return {never}
- * @throws {HttpError} This error instructs SvelteKit to initiate HTTP error handling.
- * @throws {Error} If the provided status is invalid (not between 400 and 599).
- */
-/**
- * Throws an error with a HTTP status code and an optional message.
- * When called during request handling, this will cause SvelteKit to
- * return an error response without invoking `handleError`.
- * Make sure you're not catching the thrown error, which would prevent SvelteKit from handling it.
- * @param {number} status The [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses). Must be in the range 400-599.
- * @param {{ message: string } extends App.Error ? App.Error | string | undefined : never} [body] An object that conforms to the App.Error type. If a string is passed, it will be used as the message property.
- * @overload
- * @param {number} status
- * @param {{ message: string } extends App.Error ? App.Error | string | undefined : never} [body]
- * @return {never}
- * @throws {HttpError} This error instructs SvelteKit to initiate HTTP error handling.
- * @throws {Error} If the provided status is invalid (not between 400 and 599).
- */
-/**
- * Throws an error with a HTTP status code and an optional message.
- * When called during request handling, this will cause SvelteKit to
- * return an error response without invoking `handleError`.
- * Make sure you're not catching the thrown error, which would prevent SvelteKit from handling it.
- * @param {number} status The [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses). Must be in the range 400-599.
- * @param {{ message: string } extends App.Error ? App.Error | string | undefined : never} body An object that conforms to the App.Error type. If a string is passed, it will be used as the message property.
- * @return {never}
- * @throws {HttpError} This error instructs SvelteKit to initiate HTTP error handling.
- * @throws {Error} If the provided status is invalid (not between 400 and 599).
- */
-function error(status, body) {
-	if ((isNaN(status) || status < 400 || status > 599)) {
-		throw new Error(`HTTP error status codes must be between 400 and 599 — ${status} is invalid`);
-	}
-
-	throw new HttpError(status, body);
+* @param {{ base: string, assets: string }} paths
+*/
+function override(paths) {
+	base = paths.base;
+	assets = paths.assets;
 }
-
-/**
- * Checks whether this is a redirect thrown by {@link redirect}.
- * @param {unknown} e The object to check.
- * @return {e is Redirect}
- */
-function isRedirect(e) {
-	return e instanceof Redirect;
-}
-
-/**
- * Create a JSON `Response` object from the supplied data.
- * @param {any} data The value that will be serialized as JSON.
- * @param {ResponseInit} [init] Options such as `status` and `headers` that will be added to the response. `Content-Type: application/json` and `Content-Length` headers will be added automatically.
- */
-function json(data, init) {
-	// TODO deprecate this in favour of `Response.json` when it's
-	// more widely supported
-	const body = JSON.stringify(data);
-
-	// we can't just do `text(JSON.stringify(data), init)` because
-	// it will set a default `content-type` header. duplicated code
-	// means less duplicated work
-	const headers = new Headers(init?.headers);
-	if (!headers.has('content-length')) {
-		headers.set('content-length', text_encoder.encode(body).byteLength.toString());
-	}
-
-	if (!headers.has('content-type')) {
-		headers.set('content-type', 'application/json');
-	}
-
-	return new Response(body, {
-		...init,
-		headers
-	});
-}
-
-/**
- * Create a `Response` object from the supplied body.
- * @param {string} body The value that will be used as-is.
- * @param {ResponseInit} [init] Options such as `status` and `headers` that will be added to the response. A `Content-Length` header will be added automatically.
- */
-function text(body, init) {
-	const headers = new Headers(init?.headers);
-	if (!headers.has('content-length')) {
-		const encoded = text_encoder.encode(body);
-		headers.set('content-length', encoded.byteLength.toString());
-		return new Response(encoded, {
-			...init,
-			headers
-		});
-	}
-
-	return new Response(body, {
-		...init,
-		headers
-	});
+function reset() {
+	base = initial.base;
+	assets = initial.assets;
 }
 
 /**
@@ -1675,7 +1566,7 @@ function reverse_endianness(bytes) {
 }
 /** @param {string} str */
 function encode(str) {
-	const encoded = text_encoder$1.encode(str);
+	const encoded = text_encoder.encode(str);
 	const length = encoded.length * 8;
 	const size = 512 * Math.ceil((length + 65) / 512);
 	const bytes = new Uint8Array(size / 8);
@@ -2379,8 +2270,8 @@ async function render_response({ branch, fetched, options, manifest, state, page
 		headers
 	}) : new Response(new ReadableStream({
 		async start(controller) {
-			controller.enqueue(text_encoder$1.encode(transformed + "\n"));
-			for await (const chunk of chunks) if (chunk.length) controller.enqueue(text_encoder$1.encode(chunk));
+			controller.enqueue(text_encoder.encode(transformed + "\n"));
+			for await (const chunk of chunks) if (chunk.length) controller.enqueue(text_encoder.encode(chunk));
 			controller.close();
 		},
 		type: "bytes"
@@ -3143,8 +3034,8 @@ async function render_data(event, event_state, route, options, manifest, state, 
 		if (!chunks) return json_response(data);
 		return new Response(new ReadableStream({
 			async start(controller) {
-				controller.enqueue(text_encoder$1.encode(data));
-				for await (const chunk of chunks) controller.enqueue(text_encoder$1.encode(chunk));
+				controller.enqueue(text_encoder.encode(data));
+				for await (const chunk of chunks) controller.enqueue(text_encoder.encode(chunk));
 				controller.close();
 			},
 			type: "bytes"
