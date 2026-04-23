@@ -12,7 +12,9 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "up": "docker compose up",
-    "down": "docker compose down"
+    "down": "docker compose down",
+    "db:backup": "./scripts/db-backup.sh",
+    "db:restore": "./scripts/db-restore.sh"
   },
   "engines": {
     "node": ">=20"

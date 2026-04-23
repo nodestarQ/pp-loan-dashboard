@@ -12,7 +12,16 @@ const config = {
 				"default-src": ["self"],
 				"script-src": ["self"],
 				"style-src": ["self", "unsafe-inline"],
-				"img-src": ["self", "data:"],
+				// OpenSea avatars are served from regional shards of seadn.io
+			// (i.seadn.io, i2.seadn.io, i2c.seadn.io, ...) and the legacy
+			// openseauserdata.com host. Both are required so leaderboard
+			// profile pictures render under our CSP.
+			"img-src": [
+				"self",
+				"data:",
+				"https://*.seadn.io",
+				"https://openseauserdata.com",
+			],
 				"font-src": ["self", "data:"],
 				"connect-src": ["self"],
 				"frame-ancestors": ["none"],

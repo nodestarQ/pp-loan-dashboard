@@ -41,6 +41,20 @@ export const BLUR_BLEND_ADDRESS: Address =
   "0x29469395eAf6f95920E59F858042f0e28D98a20B";
 
 /**
+ * Blend mainnet deployment. Perpetual loans mean a position opened years
+ * ago may still be active today, so the Blend indexer starts from here
+ * instead of INDEXER_START_BLOCK; otherwise we silently miss every lien
+ * opened before the 90-day window and undercount the "active" total.
+ * Fixed-duration protocols (Arcade, NFTfi) are not affected by this and
+ * stay on the shorter window.
+ *
+ * The extra ~7.5M blocks of Blend history all come down the wire because
+ * `collection` is not indexed on LoanOfferTaken — every Blend lien lands
+ * at the handler and gets filtered for PPG client-side.
+ */
+export const BLEND_DEPLOYMENT_BLOCK = 17_163_167 as const;
+
+/**
  * Arcade.xyz v3 loan contracts. V3 is still the current production version
  * on mainnet; v4 is not yet deployed per the arcadexyz/arcade-protocol repo
  * README. LoanCore emits LoanStarted / LoanRepaid / LoanClaimed but does

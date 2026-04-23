@@ -40,6 +40,21 @@ psql -v ON_ERROR_STOP=1 \
 	VALUES ('active_loans', 100)
 	ON CONFLICT (id) DO NOTHING;
 
+	-- OpenSea profile cache. Keyed by lowercase address to match how Ponder's
+	-- t.hex() stores addresses in public.holder / public.loan, so the web app
+	-- does not need per-row case normalisation when looking up rows. A row
+	-- with display columns all null but a fresh resolved_at means "OpenSea
+	-- confirmed no profile" — that negative result is cached so we do not
+	-- re-hit the rate-limited API for 24h.
+	CREATE TABLE IF NOT EXISTS app.profile (
+		address TEXT PRIMARY KEY,
+		username TEXT,
+		pfp_url TEXT,
+		twitter TEXT,
+		resolved_at TIMESTAMPTZ NOT NULL
+	);
+	GRANT SELECT, INSERT, UPDATE ON app.profile TO web_ro;
+
 	-- When ponder_rw creates tables in the public schema later, web_ro
 	-- automatically gets SELECT via default privileges. This avoids a
 	-- second migration step once the indexer runs its first backfill.

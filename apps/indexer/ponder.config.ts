@@ -3,6 +3,7 @@ import { erc721Abi } from "viem";
 
 import {
   ARCADE_CONTRACTS,
+  BLEND_DEPLOYMENT_BLOCK,
   BLUR_BLEND_ADDRESS,
   INDEXER_START_BLOCK,
   NFTFI_CONTRACTS,
@@ -44,7 +45,7 @@ export default createConfig({
       // 25 rps keeps us well under the Developer/Team CU/sec ceilings
       // while still saturating logs ingestion. Raise if you're on a
       // higher tier and seeing idle RPC capacity.
-      maxRequestsPerSecond: 25,
+      maxRequestsPerSecond: 90,
     },
   },
   contracts: {
@@ -79,7 +80,10 @@ export default createConfig({
       chain: "mainnet",
       abi: blurBlendAbi,
       address: BLUR_BLEND_ADDRESS,
-      startBlock: INDEXER_START_BLOCK,
+      // Blend needs the full history, not the shared 90-day window —
+      // see BLEND_DEPLOYMENT_BLOCK's docstring in @pp/shared for the
+      // perpetual-loan rationale.
+      startBlock: BLEND_DEPLOYMENT_BLOCK,
     },
   },
 });

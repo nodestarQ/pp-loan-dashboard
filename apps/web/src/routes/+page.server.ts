@@ -5,11 +5,11 @@ import {
 	getTopLoanAddresses,
 	safeQuery,
 } from "$lib/server/db/queries";
-import { resolveEnsNames } from "$lib/server/ens/resolve";
-import type { Address } from "viem";
+import { resolveProfiles, type Profile } from "$lib/server/profiles/resolve";
 import type { PageServerLoad } from "./$types";
 
 const DEFAULT_GOAL = 100;
+const EMPTY_PROFILE: Profile = { username: null, pfpUrl: null, twitter: null };
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
 	const [activeLoans, topHolders, topLoanAddresses] = await Promise.all([
@@ -22,19 +22,22 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	for (const h of topHolders) uniqueAddresses.add(h.address);
 	for (const l of topLoanAddresses) uniqueAddresses.add(l.borrower);
 
-	const ensMap = await safeQuery(
-		() => resolveEnsNames(Array.from(uniqueAddresses) as Address[]),
-		new Map<string, string | null>(),
-		"resolveEnsNames",
+	const profileMap = await safeQuery(
+		() => resolveProfiles(Array.from(uniqueAddresses)),
+		new Map<string, Profile>(),
+		"resolveProfiles",
 	);
 
-	const topHoldersWithEns = topHolders.map((h) => ({
+	const withProfile = (addr: string): Profile =>
+		profileMap.get(addr.toLowerCase()) ?? EMPTY_PROFILE;
+
+	const topHoldersWithProfile = topHolders.map((h) => ({
 		...h,
-		ensName: ensMap.get(h.address) ?? null,
+		profile: withProfile(h.address),
 	}));
-	const topLoanAddressesWithEns = topLoanAddresses.map((l) => ({
+	const topLoanAddressesWithProfile = topLoanAddresses.map((l) => ({
 		...l,
-		ensName: ensMap.get(l.borrower) ?? null,
+		profile: withProfile(l.borrower),
 	}));
 
 	const goalTarget = Number(pubEnv.PUBLIC_GOAL_TARGET ?? DEFAULT_GOAL);
@@ -45,8 +48,8 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 
 	return {
 		activeLoans,
-		topHolders: topHoldersWithEns,
-		topLoanAddresses: topLoanAddressesWithEns,
+		topHolders: topHoldersWithProfile,
+		topLoanAddresses: topLoanAddressesWithProfile,
 		goalTarget,
 	};
 };

@@ -1,10 +1,15 @@
 <script lang="ts">
 	import LeaderboardRow from "./LeaderboardRow.svelte";
 
+	interface Profile {
+		username: string | null;
+		pfpUrl: string | null;
+		twitter: string | null;
+	}
 	interface LoanItem {
 		borrower: string;
 		locked: number;
-		ensName?: string | null;
+		profile?: Profile;
 	}
 
 	interface Props {
@@ -28,7 +33,7 @@
 				<LeaderboardRow
 					rank={i + 1}
 					address={r.borrower}
-					ensName={r.ensName}
+					profile={r.profile}
 					count={r.locked}
 					accent="coral"
 				/>

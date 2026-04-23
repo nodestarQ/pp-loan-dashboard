@@ -52,7 +52,7 @@ services:
       DATABASE_URL: postgres://web_ro:${WEB_DB_PASSWORD}@postgres:5432/huddle
       PUBLIC_GOAL_TARGET: ${PUBLIC_GOAL_TARGET:-100}
       PONDER_URL: http://indexer:42069
-      ENS_RPC_URL: ${ENS_RPC_URL:-}
+      OPENSEA_API_KEY: ${OPENSEA_API_KEY:-}
       PORT: "3000"
       HOST: 0.0.0.0
       ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
