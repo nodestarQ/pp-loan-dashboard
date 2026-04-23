@@ -29,7 +29,14 @@ services:
     # by convention.
     environment:
       PONDER_RPC_URL_1: ${PONDER_RPC_URL_1:?PONDER_RPC_URL_1 is required in .env}
+      PONDER_RPC_URL_2: ${PONDER_RPC_URL_2:-}
+      PONDER_RPC_URL_3: ${PONDER_RPC_URL_3:-}
       DATABASE_URL: postgres://ponder_rw:${PONDER_DB_PASSWORD}@postgres:5432/huddle
+      # Ponder 0.16+ requires an explicit schema in production mode.
+      # Using "public" so web_ro's SELECT (granted via init.sh default
+      # privileges on ponder_rw's future tables) picks up holder/loan
+      # without needing a second migration.
+      DATABASE_SCHEMA: public
     depends_on:
       postgres:
         condition: service_healthy

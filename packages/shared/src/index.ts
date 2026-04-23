@@ -57,15 +57,21 @@ export const ARCADE_CONTRACTS = {
 } as const satisfies Record<string, Address>;
 
 /**
- * Block to begin indexing loan contracts from. Chosen to cover all currently-
- * open loans (NFT loan terms rarely exceed 90 days) without a multi-hour
- * historical backfill. Roughly late April 2025.
+ * Block all indexed sources (PPG + loan contracts) begin at. Scoped to
+ * roughly the last 90 days of mainnet history (from 2026-04-23). NFT
+ * loan terms rarely exceed 90 days, so this window captures essentially
+ * every currently-open position with a healthy buffer, at the cost of
+ * 3x more Arcade per-LoanStarted getLoan() readContract calls than a
+ * 30-day window.
+ *
+ * PPG holder balances are NOT derived by walking Transfer history from
+ * deployment (block 12_876_000). Instead the indexer's PPG:setup hook
+ * multicalls ownerOf() for every tokenId at this block to seed the
+ * holder table, then the Transfer handler keeps it in sync from here
+ * forward. This collapses the PPG backfill from ~13.5M blocks to ~0
+ * and costs only ~9 RPC requests at startup.
+ *
+ * Bump this forward before a production deploy if significant time has
+ * passed since the date above (roughly 216,000 blocks per 30 days).
  */
-export const LOAN_INDEXER_START_BLOCK = 22_200_000 as const;
-
-/**
- * PPG contract deployment era. Holder balances are derived from the full
- * Transfer history, so the indexer must start here (not at the loan start
- * block) for balances to be correct. Expect a longer initial backfill.
- */
-export const PPG_DEPLOYMENT_BLOCK = 12_876_000 as const;
+export const INDEXER_START_BLOCK = 24_168_000 as const;

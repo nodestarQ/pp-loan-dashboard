@@ -152,6 +152,9 @@ apps/indexer/generated/
 # Docker compose volumes (if ever mounted as host paths)
 pgdata/
 
+# Ponder DB snapshots produced by scripts/db-backup.sh
+backups/
+
 # OS
 .DS_Store
 Thumbs.db

@@ -7,6 +7,8 @@
   "scripts": {
     "dev:web": "pnpm --filter @pp/web dev",
     "dev:indexer": "pnpm --filter @pp/indexer dev",
+    "dev:stack": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d postgres indexer",
+    "dev:stack:down": "docker compose down",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "up": "docker compose up",

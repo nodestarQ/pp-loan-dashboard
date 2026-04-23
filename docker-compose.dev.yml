@@ -1,0 +1,20 @@
+name: huddle
+
+# Dev-only override: publishes postgres + indexer ports on the host's
+# loopback interface so a locally-run SvelteKit dev server can hit the
+# compose stack. NOT loaded by plain `docker compose up` — use
+# `pnpm dev:stack` (or `docker compose -f docker-compose.yml -f docker-compose.dev.yml up`)
+# to apply it. Keeping it opt-in means production deploys of
+# docker-compose.yml alone never accidentally expose Postgres.
+#
+# Binding to 127.0.0.1 restricts access to the host itself; the ports
+# are not reachable from the LAN even on a multi-homed machine.
+
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  indexer:
+    ports:
+      - "127.0.0.1:42069:42069"
