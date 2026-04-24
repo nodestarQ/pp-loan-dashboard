@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Banner from "$lib/components/Banner.svelte";
-	import GoalsTracker from "$lib/components/GoalsTracker.svelte";
 	import HealthMeter from "$lib/components/HealthMeter.svelte";
 	import HolderLeaderboard from "$lib/components/HolderLeaderboard.svelte";
 	import LoanLeaderboard from "$lib/components/LoanLeaderboard.svelte";
@@ -22,20 +21,22 @@
 		{#snippet children()}
 			Penguins huddle together when it gets cold. When loans pile up
 			against our collection, the huddle weakens. This dashboard tracks
-			active PPG loans across NFTfi, Arcade, and Blur Blend so the
+			active Pudgy Penguin loans across NFTfi, Arcade, and Blur Blend so the
 			community can rally to bring them back down.
 		{/snippet}
 	</Narrative>
 </section>
 
 <section class="grid gap-4 md:grid-cols-2 md:gap-6">
-	<div class="flex flex-col gap-4 md:gap-6">
-		<HealthMeter active={data.activeLoans} />
-		<GoalsTracker current={data.activeLoans} target={data.goalTarget} />
+	<div class="md:col-span-2">
+		<HealthMeter
+			active={data.activeLoans}
+			borrowers={data.participants.borrowers}
+			lenders={data.participants.lenders}
+			goalTarget={data.goalTarget}
+		/>
 	</div>
 
-	<div class="flex flex-col gap-4 md:gap-6">
-		<HolderLeaderboard rows={data.topHolders} />
-		<LoanLeaderboard rows={data.topLoanAddresses} />
-	</div>
+	<HolderLeaderboard rows={data.topHolders} />
+	<LoanLeaderboard rows={data.topLoanAddresses} />
 </section>

@@ -9,11 +9,13 @@
     "preview": "vite preview",
     "start": "node build",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "postinstall": "cp node_modules/@rive-app/canvas-lite/rive.wasm static/character/rive.wasm"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.2.7",
     "@pp/shared": "workspace:*",
+    "@rive-app/canvas-lite": "^2.37.3",
     "postgres": "^3.4.9",
     "viem": "^2.48.4"
   },

@@ -27,6 +27,29 @@ export async function getActiveLoanCount(): Promise<number> {
 	return Number(rows[0]?.count ?? 0);
 }
 
+/**
+ * Unique borrower / lender addresses across active loans on all protocols.
+ * A single wallet could plausibly be both borrower and lender on different
+ * positions, so the two counts are not mutually exclusive.
+ */
+export async function getActiveParticipantCounts(): Promise<{
+	borrowers: number;
+	lenders: number;
+}> {
+	const sql = getSql();
+	const rows = await sql<{ borrowers: string; lenders: string }[]>`
+		SELECT
+			COUNT(DISTINCT borrower)::text AS borrowers,
+			COUNT(DISTINCT lender)::text AS lenders
+		FROM loan
+		WHERE status = 'active'
+	`;
+	return {
+		borrowers: Number(rows[0]?.borrowers ?? 0),
+		lenders: Number(rows[0]?.lenders ?? 0),
+	};
+}
+
 export async function getTopHolders(limit = 20): Promise<HolderRow[]> {
 	const sql = getSql();
 	// ORDER BY references holder.balance explicitly; without the qualifier

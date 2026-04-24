@@ -38,6 +38,9 @@ importers:
       '@pp/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@rive-app/canvas-lite':
+        specifier: ^2.37.3
+        version: 2.37.3
       postgres:
         specifier: ^3.4.9
         version: 3.4.9
@@ -399,6 +402,9 @@ packages:
 
   '@repeaterjs/repeater@3.0.6':
     resolution: {integrity: sha512-Javneu5lsuhwNCryN+pXH93VPQ8g0dBX7wItHFgYiwQmzE1sVdg5tWHiOgHywzL2W21XQopa7IwIEnNbmeUJYA==}
+
+  '@rive-app/canvas-lite@2.37.3':
+    resolution: {integrity: sha512-lw4M13Yu1VZSlys/4yW3O4IGMXqSsZCdwPTEkspR9PkphJW+WWjxT99F946eXAVV6aNg5gE3XuW3PQaoDciiYg==}
 
   '@rolldown/binding-android-arm64@1.0.0-rc.16':
     resolution: {integrity: sha512-rhY3k7Bsae9qQfOtph2Pm2jZEA+s8Gmjoz4hhmx70K9iMQ/ddeae+xhRQcM5IuVx5ry1+bGfkvMn7D6MJggVSA==}
@@ -2202,6 +2208,8 @@ snapshots:
       typescript: 5.9.3
 
   '@repeaterjs/repeater@3.0.6': {}
+
+  '@rive-app/canvas-lite@2.37.3': {}
 
   '@rolldown/binding-android-arm64@1.0.0-rc.16':
     optional: true

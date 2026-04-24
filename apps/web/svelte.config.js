@@ -10,7 +10,9 @@ const config = {
 			mode: "auto",
 			directives: {
 				"default-src": ["self"],
-				"script-src": ["self"],
+				// wasm-unsafe-eval is required so the Rive runtime (used by
+				// PainguClicker.svelte) can compile its bundled WASM module.
+				"script-src": ["self", "wasm-unsafe-eval"],
 				"style-src": ["self", "unsafe-inline"],
 				// OpenSea avatars are served from regional shards of seadn.io
 			// (i.seadn.io, i2.seadn.io, i2c.seadn.io, ...) and the legacy

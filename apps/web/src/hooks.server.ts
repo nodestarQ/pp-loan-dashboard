@@ -1,5 +1,12 @@
 import type { Handle } from "@sveltejs/kit";
 
+import { startProfileWorker } from "$lib/server/profiles/worker";
+
+// Kick off the background OpenSea profile syncer once per server start.
+// Idempotent: startProfileWorker() no-ops if the interval is already set,
+// which matters under Vite HMR where this module can reload repeatedly.
+startProfileWorker();
+
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 10;
 

@@ -1,6 +1,7 @@
 import { env as pubEnv } from "$env/dynamic/public";
 import {
 	getActiveLoanCount,
+	getActiveParticipantCounts,
 	getTopHolders,
 	getTopLoanAddresses,
 	safeQuery,
@@ -8,15 +9,25 @@ import {
 import { resolveProfiles, type Profile } from "$lib/server/profiles/resolve";
 import type { PageServerLoad } from "./$types";
 
-const DEFAULT_GOAL = 100;
+const DEFAULT_GOAL = 130;
 const EMPTY_PROFILE: Profile = { username: null, pfpUrl: null, twitter: null };
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
-	const [activeLoans, topHolders, topLoanAddresses] = await Promise.all([
-		safeQuery(() => getActiveLoanCount(), 0, "activeLoanCount"),
-		safeQuery(() => getTopHolders(20), [], "topHolders"),
-		safeQuery(() => getTopLoanAddresses(20), [], "topLoanAddresses"),
-	]);
+	const [activeLoans, participants, topHolders, topLoanAddresses] =
+		await Promise.all([
+			safeQuery(() => getActiveLoanCount(), 0, "activeLoanCount"),
+			safeQuery(
+				() => getActiveParticipantCounts(),
+				{ borrowers: 0, lenders: 0 },
+				"activeParticipantCounts",
+			),
+			safeQuery(() => getTopHolders(50), [], "topHolders"),
+			// Borrowers are a much smaller set than holders (capped at the
+			// number of unique wallets with an active PPG loan, typically
+			// a few hundred at most), so we pull them all and paginate on
+			// the client rather than artificially truncating the list.
+			safeQuery(() => getTopLoanAddresses(1000), [], "topLoanAddresses"),
+		]);
 
 	const uniqueAddresses = new Set<string>();
 	for (const h of topHolders) uniqueAddresses.add(h.address);
@@ -48,6 +59,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 
 	return {
 		activeLoans,
+		participants,
 		topHolders: topHoldersWithProfile,
 		topLoanAddresses: topLoanAddressesWithProfile,
 		goalTarget,

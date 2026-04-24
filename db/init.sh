@@ -37,7 +37,7 @@ psql -v ON_ERROR_STOP=1 \
 	GRANT SELECT, INSERT, UPDATE ON app.goals TO web_ro;
 
 	INSERT INTO app.goals (id, target)
-	VALUES ('active_loans', 100)
+	VALUES ('active_loans', 130)
 	ON CONFLICT (id) DO NOTHING;
 
 	-- OpenSea profile cache. Keyed by lowercase address to match how Ponder's

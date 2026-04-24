@@ -29,7 +29,7 @@
 	);
 </script>
 
-<li class="flex items-center justify-between gap-3 py-2.5">
+<li class="flex min-h-16 items-center justify-between gap-3 py-2.5">
 	<div class="flex min-w-0 items-center gap-3">
 		<span class="w-7 flex-shrink-0 text-right font-bold tabular-nums text-fog">
 			{rank}.
