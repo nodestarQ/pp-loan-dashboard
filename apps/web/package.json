@@ -10,7 +10,7 @@
     "start": "node build",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "postinstall": "cp node_modules/@rive-app/canvas-lite/rive.wasm static/character/rive.wasm"
+    "postinstall": "mkdir -p static/character && cp node_modules/@rive-app/canvas-lite/rive.wasm static/character/rive.wasm"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.2.7",
