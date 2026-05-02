@@ -15,8 +15,11 @@
   "dependencies": {
     "@fontsource-variable/nunito": "^5.2.7",
     "@pp/shared": "workspace:*",
+    "@resvg/resvg-js": "^2.6.2",
     "@rive-app/canvas-lite": "^2.37.3",
     "postgres": "^3.4.9",
+    "satori": "^0.26.0",
+    "satori-html": "^0.3.2",
     "viem": "^2.48.4"
   },
   "devDependencies": {

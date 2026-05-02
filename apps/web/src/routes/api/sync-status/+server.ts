@@ -13,34 +13,44 @@ export type SyncStatus = {
 };
 
 /**
- * Proxies Ponder's /status endpoint so the browser never needs to reach
- * the indexer directly (indexer has no published host port). The web
- * container has no Infura credentials; this URL is purely the intra-compose
- * address of the indexer's HTTP server.
+ * Proxies two Ponder endpoints so the browser never needs to reach the
+ * indexer directly (indexer has no published host port). Ponder 0.16
+ * splits "am I caught up?" (`/ready`: 200 = yes) from "what block are you
+ * on?" (`/status`), so we fan out and merge.
  */
 export const GET: RequestHandler = async () => {
 	const controller = new AbortController();
 	const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
 	try {
-		const response = await fetch(`${PONDER_URL}/status`, {
-			signal: controller.signal,
-		});
-		if (!response.ok) {
+		const [readyRes, statusRes] = await Promise.all([
+			fetch(`${PONDER_URL}/ready`, { signal: controller.signal }).catch(
+				() => null,
+			),
+			fetch(`${PONDER_URL}/status`, { signal: controller.signal }).catch(
+				() => null,
+			),
+		]);
+
+		if (!readyRes && !statusRes) {
 			return json(offline());
 		}
-		const data = (await response.json()) as {
-			mainnet?: {
-				ready?: boolean;
-				block?: { number?: number; timestamp?: number };
+
+		let indexedBlock: number | null = null;
+		let indexedAt: number | null = null;
+		if (statusRes?.ok) {
+			const data = (await statusRes.json()) as {
+				mainnet?: { block?: { number?: number; timestamp?: number } };
 			};
-		};
-		const mainnet = data.mainnet;
+			indexedBlock = data.mainnet?.block?.number ?? null;
+			indexedAt = data.mainnet?.block?.timestamp ?? null;
+		}
+
 		return json({
-			ready: mainnet?.ready === true,
+			ready: readyRes?.ok === true,
 			indexerReachable: true,
-			indexedBlock: mainnet?.block?.number ?? null,
-			indexedAt: mainnet?.block?.timestamp ?? null,
+			indexedBlock,
+			indexedAt,
 		} satisfies SyncStatus);
 	} catch {
 		return json(offline());

@@ -8,8 +8,8 @@
 	import type { Rive as RiveType } from "@rive-app/canvas-lite";
 
 	// Damage overlays as they appear on the Rive view model, ordered from
-	// subtle to severe. The debug slider advances through them cumulatively:
-	// at level n the first n overlays are on (opacity 1), the rest off.
+	// subtle to severe. A damage ratio of 1 turns on all N; a ratio of 0
+	// turns them all off. Each overlay represents 1/N of the full range.
 	const DAMAGE_OVERLAYS = [
 		"scratchesOpacity",
 		"bandAidsOpacity",
@@ -21,15 +21,29 @@
 		"bumpOpacity",
 	] as const;
 	const SHOW_DAMAGE_PROPERTY = "showDamage";
+	const HEAD_HOVERED_PROPERTY = "headHovered";
 
 	type OverlayName = (typeof DAMAGE_OVERLAYS)[number];
 	type RiveNumber = { value: number };
 	type RiveBoolean = { value: boolean };
 
-	let canvas: HTMLCanvasElement;
-	let damageLevel = $state(0);
+	interface Props {
+		// 0 = no damage, 1 = all overlays on. Values outside [0,1] are
+		// clamped. Caller is responsible for the domain mapping (e.g.
+		// active_loans / goal_target).
+		damageRatio: number;
+	}
+	const { damageRatio }: Props = $props();
 
-	// Plain (non-reactive) refs for the Rive class instances — if Svelte
+	const N = DAMAGE_OVERLAYS.length;
+	const damageLevel = $derived(
+		Math.min(N, Math.max(0, Math.floor(damageRatio * N))),
+	);
+
+	let canvas: HTMLCanvasElement;
+	let ready = $state(false);
+
+	// Plain (non-reactive) refs for the Rive class instances, since if Svelte
 	// wraps them in a deep $state proxy, writes through the `value`
 	// setter can be intercepted and never reach the WASM runtime.
 	const overlayProps: Partial<Record<OverlayName, RiveNumber>> = {};
@@ -43,11 +57,36 @@
 		if (showDamageProp) showDamageProp.value = n > 0;
 	}
 
+	$effect(() => {
+		if (ready) applyDamageLevel(damageLevel);
+	});
+
 	onMount(() => {
 		let rive: RiveType | undefined;
 		let cancelled = false;
 
 		const onResize = () => rive?.resizeDrawingSurfaceToCanvas();
+
+		// Forward page-wide pointer movement onto the canvas so the
+		// character's eye/head-follow behaviour tracks the cursor across
+		// the whole document, not only while hovering the canvas itself.
+		// Rive's internal listener computes canvas-local coords as
+		// (clientX - canvasRect.left), which happily produces values
+		// outside the canvas bounds when the mouse is elsewhere on screen.
+		// We skip dispatch while the cursor is already over the canvas to
+		// avoid double-processing the same event.
+		const onDocMouseMove = (e: MouseEvent) => {
+			if (!canvas) return;
+			if (e.target === canvas) return;
+			canvas.dispatchEvent(
+				new MouseEvent("mousemove", {
+					clientX: e.clientX,
+					clientY: e.clientY,
+					bubbles: false,
+				}),
+			);
+		};
+		window.addEventListener("mousemove", onDocMouseMove);
 
 		// Dynamic import + async work inside a sync-returning onMount:
 		// schedule the load, run cleanup whether or not the load finished.
@@ -87,7 +126,25 @@
 						console.warn(
 							`[rive] no boolean property named "${SHOW_DAMAGE_PROPERTY}" on view model`,
 						);
-					applyDamageLevel(damageLevel);
+					// Drive the canvas cursor off a view-model boolean the
+					// Rive file flips via Pointer Enter/Exit listeners on the
+					// head shape. Initial assignment covers the mouse-never-
+					// moved case; the subscription covers every change after.
+					const headHoveredProp = vmi?.boolean(HEAD_HOVERED_PROPERTY);
+					if (headHoveredProp) {
+						const syncCursor = () => {
+							canvas.style.cursor = headHoveredProp.value
+								? "pointer"
+								: "default";
+						};
+						syncCursor();
+						headHoveredProp.on(syncCursor);
+					} else {
+						console.warn(
+							`[rive] no boolean property named "${HEAD_HOVERED_PROPERTY}" on view model`,
+						);
+					}
+					ready = true;
 					// Expose on window for devtools poking.
 					(window as unknown as { __rive: unknown }).__rive = rive;
 				},
@@ -98,6 +155,7 @@
 		return () => {
 			cancelled = true;
 			window.removeEventListener("resize", onResize);
+			window.removeEventListener("mousemove", onDocMouseMove);
 			rive?.cleanup();
 		};
 	});
@@ -105,25 +163,6 @@
 
 <canvas
 	bind:this={canvas}
-	class="mx-auto aspect-square w-full max-w-xl"
+	class="mx-auto aspect-[3/2] w-full max-w-xl"
 	aria-label="Pudgy Penguin animation"
 ></canvas>
-
-<div class="mx-auto mt-4 flex w-full max-w-xl items-center gap-3 text-sm">
-	<label for="damage-level" class="shrink-0 font-mono text-neutral-400">
-		damage
-	</label>
-	<input
-		id="damage-level"
-		type="range"
-		min="0"
-		max={DAMAGE_OVERLAYS.length}
-		step="1"
-		bind:value={damageLevel}
-		oninput={() => applyDamageLevel(damageLevel)}
-		class="flex-1"
-	/>
-	<span class="w-16 shrink-0 text-right font-mono tabular-nums text-neutral-400">
-		{damageLevel} / {DAMAGE_OVERLAYS.length}
-	</span>
-</div>
