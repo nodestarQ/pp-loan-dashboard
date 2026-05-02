@@ -22,9 +22,17 @@ import { fetchOpenSeaProfile, type OpenSeaProfile } from "./opensea";
 
 const REFRESH_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
 const TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-const CONCURRENCY = 4;
+// OpenSea's keyed v2 quota is ~4 RPS. We stay well under it: a single
+// worker pacing one request every PER_REQUEST_PACE_MS (~3 RPS aggregate)
+// avoids the cold-start storm of 429s that happens on a freshly-seeded
+// deploy where app.profile is empty and ~5k candidates all look stale.
+const CONCURRENCY = 1;
 const PER_REQUEST_TIMEOUT_MS = 10_000;
+const PER_REQUEST_PACE_MS = 350;
+const RATE_LIMIT_BACKOFF_MS = 5_000;
 const STARTUP_DELAY_MS = 500;
+
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 let intervalHandle: NodeJS.Timeout | null = null;
 let runningNow = false;
@@ -131,10 +139,19 @@ async function runOnce(): Promise<void> {
 						const profile = await fetchOpenSeaProfile(addr, apiKey, signal);
 						await upsertProfile(sql, addr, profile);
 						fetched += 1;
+						await sleep(PER_REQUEST_PACE_MS);
 					} catch (err) {
 						errors += 1;
 						const msg = err instanceof Error ? err.message : String(err);
 						console.warn(`[profile-worker] ${addr}: ${msg}`);
+						// Back off on 429 so we don't keep hammering an already-
+						// throttled quota. Other errors still get the base pace
+						// so a single bad address doesn't stall the whole run.
+						if (msg.includes("429")) {
+							await sleep(RATE_LIMIT_BACKOFF_MS);
+						} else {
+							await sleep(PER_REQUEST_PACE_MS);
+						}
 					}
 				}
 			},
